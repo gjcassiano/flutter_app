@@ -36,11 +36,24 @@ class Page1 extends StatelessWidget {
   }
 }
 
-class ConfigurationPage extends StatelessWidget {
+class Configuration extends StatefulWidget {
+    @override
+    ConfigurationPage createState() => ConfigurationPage();
+}
+
+class ConfigurationPage extends State<Configuration>  {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _name;
   int _age;
-
+  
+  String _findPreference = 'Qualquer';
+  _selectPreference(String value) {
+      print(value);
+      setState(() {
+          _findPreference = value;
+      });
+  }
+  
   _submit() {
     if (_formKey.currentState.validate()) {
       // No any error in validation
@@ -66,16 +79,8 @@ class ConfigurationPage extends StatelessWidget {
     return null;
   }
 
-
-  
   @override
   Widget build(BuildContext context) {
-      int _radioValue = 1;
-      void handleRadioValueChanged(int value) {
-        
-          _radioValue = value;
-      }
-      
     return Container(
         child: new Form(
             key: _formKey,
@@ -123,34 +128,25 @@ class ConfigurationPage extends StatelessWidget {
                               alignLabelWithHint: true,
                               labelText: 'Sua idade')),
                       new Text(
-                        'Lion is :',
-                        style: new TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                        ),
+                        'Você procura',
+                          textAlign: TextAlign.right
                       ),
                       
                       new Container(
-                          padding: EdgeInsets.all(20),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                                Radio(
-                                    value: 0,
-                                    groupValue: _radioValue,
-                                    onChanged: null,
-                                ),
-                                Radio(
-                                    value: 1,
-                                    groupValue: _radioValue,
-                                    onChanged: handleRadioValueChanged,
-                                ),
-                                Radio(
-                                    value: 2,
-                                    groupValue: _radioValue,
-                                    onChanged: handleRadioValueChanged,
-                                ),
-                            ],
+                          padding: EdgeInsets.all(0),
+                          child: new DropdownButton<String>(
+                              value: _findPreference,
+                              isExpanded: true,
+                              elevation: 16,
+                              onChanged: _selectPreference,
+                              items: <String>['Qualquer', 'Homens', 'Mulheres']
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                  );
+                              })
+                                  .toList(),
                           )),
                       new Container(
                           padding: const EdgeInsets.all(20.0),
@@ -183,9 +179,9 @@ class ConfigurationPage extends StatelessWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int currentPageIndex = 1;
+  int currentPageIndex = 0;
   Page1 page1;
-  ConfigurationPage configurationPage;
+  Configuration configuration;
   Widget currentPage;
 
   List<Widget> pages;
@@ -193,8 +189,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     page1 = Page1();
-    configurationPage = ConfigurationPage();
-    pages = [page1, configurationPage];
+    configuration = Configuration();
+    pages = [page1, configuration];
     currentPage = page1;
     super.initState();
   }

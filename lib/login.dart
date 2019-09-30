@@ -34,6 +34,9 @@ class LoginManager {
   logout() {
     _googleSignIn.disconnect();
   }
+  getProfilePictureUrl(){
+    return _googleSignIn.currentUser.photoUrl;
+  }
 }
 
 class LoginManagerScreen extends StatefulWidget {
